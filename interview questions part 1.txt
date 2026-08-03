@@ -1,0 +1,36 @@
+
+Q1. Tell me about yourself and your experience in DevOps.
+Q2. Can you explain how you deployed an application on AWS in your current role?
+Q3. Your application is not accessible in the browser after deployment. What steps will you follow to troubleshoot?
+Q4. What is CI/CD and how did you use Jenkins in your project?
+Q5. Your Jenkins build suddenly fails. What steps will you take to fix it?
+Q6. What is Docker and why 	Q servers?
+Q7. Our Docker container is running but the application is not accessible. How will you troubleshoot?
+Q8. What is Kubernetes, and what steps will you follow if a pod is in CrashLoopBackOff state?
+Q9. Your server disk is almost full and the application stopped working. How will you troubleshoot and fix it?
+Q10.  You receive an alert that CPU usage is very high on a production server. What will you do?
+Q11. Your application cannot connect to the database. What steps will you follow to troubleshoot?
+Q12. EC2 is running but application is slow. What will you check?
+Q13. A new deployment broke production. How will you handle this situation step-by-step?
+Q14. All pods of an application are down in Kubernetes. How will you troubleshoot and recover the service?
+Q15. Terraform apply failed and now the infrastructure is in a partial state. What will you do?
+Q16. You are on-call and receive an alert at midnight that production is down. What will you do?
+Q17. Your application works fine during the day but becomes very slow every night at the same time. How will you investigate and fix this?
+Q18. Users can access your application from inside the VPC, but not from the internet. How will you troubleshoot?
+Q19. Kubernetes cluster is running, but one service is randomly unavailable for some users. How will you investigate?
+Q20. What is more important: fixing the issue quickly or finding the root cause? Why?
+Q21. You deployed an application on EC2. Everything works fine, but after rebooting the EC2 instance, the application does not start automatically. Why does this happen and how will you fix it?
+Q22. Your Jenkins pipeline works fine on the main branch, but fails only on feature branches. What could be the reasons?
+Q23. Your Docker image size is very large and deployments are slow. How will you reduce the image size? 
+Q24. A change in ConfigMap did not reflect in the running pods. Why, and how will you fix it?
+Q25. A developer says they cannot SSH into an EC2 instance, but others can. What could be the reasons?
+Q26. Your AWS monthly bill suddenly increased. How will you investigate and control the cost?
+Q27. How do you securely store and use secrets like passwords or API keys in CI/CD pipelines?
+Q28. What is the difference between monitoring and alerting, and how are both used in production?
+Q29. Design a simple, secure, and scalable architecture to deploy a web application on AWS.
+Q30. Two developers pushed conflicting changes to the same file and the build failed. How will you handle this?
+Q31. What would you do if you are asked to deploy something you are not fully confident about?
+Q32. What is the difference between monitoring and logging, and why do we need both?
+Q33. A developer says their code works locally but fails after deployment. As a DevOps engineer, how will you help debug this issue?
+Q34. What does DevOps mean to you, and how do you apply it in your daily work?
+Q35. If you join our company tomorrow as a DevOps Intern, what are the first 3 things you will do in your first week?
