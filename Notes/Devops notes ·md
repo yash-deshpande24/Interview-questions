@@ -1,0 +1,345 @@
+DevOps Notes: Docker, Terraform, Jenkins CI/CD, Datadog & AWS CloudWatch
+1. Docker
+1.1 Docker म्हणजे काय?
+
+Docker हे एक containerization platform आहे जे application आणि त्याच्या dependencies (libraries, runtime, config files) यांना एका lightweight, portable container मध्ये package करते. यामुळे "it works on my machine" ही problem सुटते कारण container सगळीकडे सारखाच run होतो.
+
+1.2 Core Concepts
+Image: Read-only template ज्यामध्ये application code + dependencies असतात.
+Container: Image चा running instance.
+Dockerfile: Image कशी build करायची याच्या instructions.
+Docker Engine: Containers run करणारा runtime (dockerd daemon + CLI).
+Docker Hub / Registry: Images store आणि share करण्यासाठी central repository (public/private).
+Volume: Container बंद झाल्यावरही data persist राहावा म्हणून वापरतात.
+Network: Containers एकमेकांशी किंवा host सोबत communicate करण्यासाठी.
+1.3 Dockerfile Example
+dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 3000
+CMD ["npm", "start"]
+1.4 Important Commands
+bash
+docker build -t myapp:1.0 .          # Image build करणे
+docker images                         # सर्व images list करणे
+docker run -d -p 8080:3000 myapp:1.0  # Container चालवणे (detached mode)
+docker ps                             # Running containers पाहणे
+docker ps -a                          # सर्व containers (stopped सुद्धा)
+docker stop <container_id>            # Container थांबवणे
+docker rm <container_id>              # Container delete करणे
+docker rmi <image_id>                 # Image delete करणे
+docker exec -it <container_id> bash   # Container मध्ये shell access
+docker logs <container_id>            # Container चे logs पाहणे
+docker-compose up -d                  # Multi-container app चालवणे
+1.5 Docker Compose
+
+Multiple containers (उदा. app + database + cache) एकत्र manage करण्यासाठी वापरतात.
+
+yaml
+version: "3.8"
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: example
+    volumes:
+      - db-data:/var/lib/postgresql/data
+volumes:
+  db-data:
+1.6 Docker चे फायदे
+Lightweight (VM पेक्षा कमी resource वापरतो)
+Fast startup time
+Consistent environment (dev, test, prod सारखेच)
+Easy scaling आणि microservices architecture ला support
+CI/CD pipelines सोबत सहज integrate होतो
+1.7 Best Practices
+Multi-stage builds वापरून image size कमी करणे
+.dockerignore file वापरणे (unnecessary files exclude करण्यासाठी)
+Base image शक्यतो alpine किंवा minimal वापरणे
+Non-root user मध्ये container run करणे (security साठी)
+Image versions/tags properly maintain करणे (latest टाळणे production मध्ये)
+2. Terraform
+2.1 Terraform म्हणजे काय?
+
+Terraform हे HashiCorp चे Infrastructure as Code (IaC) tool आहे. यामुळे cloud infrastructure (servers, networks, databases, etc.) code स्वरूपात लिहून automate आणि version-control करता येते. Multi-cloud support आहे (AWS, Azure, GCP, इ.).
+
+2.2 Core Concepts
+Provider: कोणत्या cloud/platform सोबत काम करायचे (aws, azurerm, google, इ.)
+Resource: Infrastructure चा actual component (EC2 instance, S3 bucket, इ.)
+State File (terraform.tfstate): Current infrastructure ची स्थिती track करणारी file
+Module: Reusable code blocks (एकाच configuration ला अनेक ठिकाणी वापरणे)
+Variables: Dynamic values pass करण्यासाठी
+Output: Resource create झाल्यानंतर information display करण्यासाठी
+Plan: Apply करण्याआधी काय बदल होणार आहे ते preview करणे
+2.3 Basic Workflow
+bash
+terraform init      # Provider plugins download + backend initialize
+terraform validate  # Syntax check
+terraform plan       # Changes preview करणे
+terraform apply      # Actual infrastructure create/update करणे
+terraform destroy    # Infrastructure delete करणे
+2.4 Example Configuration
+hcl
+provider "aws" {
+  region = "ap-south-1"
+}
+
+resource "aws_instance" "web_server" {
+  ami           = "ami-0abcdef1234567890"
+  instance_type = "t2.micro"
+
+  tags = {
+    Name = "MyWebServer"
+  }
+}
+
+variable "instance_count" {
+  default = 2
+}
+
+output "instance_ip" {
+  value = aws_instance.web_server.public_ip
+}
+2.5 State Management
+State file मध्ये infrastructure चे current mapping असते.
+Team collaboration साठी state remote ठेवावा (S3 + DynamoDB lock वापरून) local state ऐवजी.
+hcl
+terraform {
+  backend "s3" {
+    bucket         = "my-terraform-state"
+    key            = "prod/terraform.tfstate"
+    region         = "ap-south-1"
+    dynamodb_table = "terraform-locks"
+  }
+}
+2.6 Terraform चे फायदे
+Infrastructure version control (Git सोबत)
+Reproducible environments (dev/staging/prod सारखेच)
+Multi-cloud support
+Human-readable syntax (HCL)
+Drift detection (actual state आणि code मधला फरक ओळखतो)
+2.7 Best Practices
+Remote state + state locking वापरणे
+Modules वापरून code reusable ठेवणे
+Sensitive data (passwords, keys) .tfvars किंवा secret manager मध्ये ठेवणे, hardcode न करणे
+Workspaces वापरून environments वेगळे ठेवणे (dev/staging/prod)
+terraform fmt आणि terraform validate CI मध्ये चालवणे
+3. Jenkins CI/CD
+3.1 Jenkins म्हणजे काय?
+
+Jenkins हे open-source automation server आहे जे CI/CD (Continuous Integration / Continuous Deployment) pipelines automate करण्यासाठी वापरतात. Code commit झाल्यावर automatically build, test आणि deploy करते.
+
+3.2 CI/CD म्हणजे काय?
+Continuous Integration (CI): Developers चा code वारंवार merge करून automatically build + test करणे, जेणेकरून bugs लवकर सापडतील.
+Continuous Delivery/Deployment (CD): Tested code automatically staging/production environment मध्ये deploy करणे.
+3.3 Jenkins Architecture
+Master (Controller): Jobs schedule आणि manage करतो.
+Agent (Node/Slave): Actual build/test task execute करतो.
+Plugins: Jenkins ची functionality वाढवण्यासाठी (Git, Docker, Slack, इ. integrations)
+3.4 Pipeline Types
+Freestyle Project: GUI द्वारे simple job configuration
+Pipeline (Declarative/Scripted): Code स्वरूपात pipeline लिहिणे (Jenkinsfile)
+3.5 Sample Jenkinsfile (Declarative)
+groovy
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = "myapp:${BUILD_NUMBER}"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/user/myrepo.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'docker build -t $DOCKER_IMAGE .'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'npm test'
+            }
+        }
+
+        stage('Push to Registry') {
+            steps {
+                sh 'docker push myrepo/$DOCKER_IMAGE'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'kubectl apply -f deployment.yaml'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline successfully completed!'
+        }
+        failure {
+            echo 'Pipeline failed. Check logs.'
+        }
+    }
+}
+3.6 CI/CD Pipeline Stages (सामान्यतः)
+Source – Git repository मधून code checkout
+Build – Code compile/build करणे (उदा. Docker image)
+Test – Unit/Integration tests चालवणे
+Code Quality Check – SonarQube सारखे tools वापरून
+Push – Artifact/Docker image registry मध्ये push करणे
+Deploy – Staging/Production मध्ये deploy करणे
+Monitor – Datadog/CloudWatch द्वारे post-deployment monitoring
+3.7 Important Jenkins Features
+Webhooks: GitHub/GitLab वरून code push झाल्यावर automatically trigger होणे
+Parallel Stages: वेळ वाचवण्यासाठी एकाचवेळी multiple tasks run करणे
+Credentials Manager: Secrets/passwords सुरक्षितपणे store करणे
+Blue Ocean: Jenkins चे modern UI/visualization plugin
+3.8 Best Practices
+Jenkinsfile code repository सोबतच version control मध्ये ठेवणे
+Secrets कधीही hardcode न करता Credentials plugin वापरणे
+Pipeline modular ठेवणे (shared libraries वापरणे)
+Automated rollback strategy ठेवणे deployment fail झाल्यास
+Notifications (Slack/Email) configure करणे build status साठी
+4. Datadog
+4.1 Datadog म्हणजे काय?
+
+Datadog हे monitoring आणि observability platform आहे जे infrastructure, applications, logs आणि network यांचे real-time monitoring करते. Cloud-native applications साठी widely वापरले जाते.
+
+4.2 Core Features
+Infrastructure Monitoring: Servers, containers, VMs चे CPU, memory, disk metrics
+APM (Application Performance Monitoring): Application मधील प्रत्येक request चा trace आणि performance
+Log Management: Centralized logging आणि log analysis
+Dashboards: Custom visual dashboards तयार करणे
+Alerts/Monitors: Threshold cross झाल्यावर automatic alerts
+Synthetic Monitoring: Website/API uptime आणि performance test करणे
+Security Monitoring: Cloud/infra security threats detect करणे
+4.3 Datadog Agent
+
+Datadog Agent हे एक lightweight software आहे जे server/container वर install करून metrics, logs, traces collect करून Datadog platform ला पाठवते.
+
+bash
+DD_API_KEY=<your_api_key> DD_SITE="datadoghq.com" bash -c \
+"$(curl -L https://install.datadoghq.com/scripts/install_script_agent7.sh)"
+4.4 Docker Container Monitoring Example
+yaml
+datadog-agent:
+  image: gcr.io/datadoghq/agent:latest
+  environment:
+    - DD_API_KEY=<your_api_key>
+    - DD_SITE=datadoghq.com
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    - /proc/:/host/proc/:ro
+    - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+4.5 Monitors & Alerts
+
+Datadog मध्ये आपण threshold-based monitors set करू शकतो, उदा:
+
+CPU usage 80% पेक्षा जास्त झाल्यास alert
+API response time 2 seconds पेक्षा जास्त असल्यास alert
+Error rate spike झाल्यास Slack/PagerDuty notification
+4.6 फायदे
+Real-time visibility संपूर्ण infrastructure आणि application चे
+Multi-cloud आणि multi-service support (AWS, Azure, GCP, Kubernetes, इ.)
+Root cause analysis सोपे होते (metrics + logs + traces एकत्र)
+Custom dashboards आणि reporting
+4.7 Best Practices
+Tags योग्य पद्धतीने वापरणे (env, service, version) filtering साठी
+Important metrics साठी SLO (Service Level Objectives) define करणे
+Alert fatigue टाळण्यासाठी meaningful thresholds ठेवणे
+Logs, metrics, traces यांना correlate करणे faster debugging साठी
+5. AWS CloudWatch
+5.1 CloudWatch म्हणजे काय?
+
+AWS CloudWatch हे Amazon चे native monitoring आणि observability service आहे जे AWS resources (EC2, RDS, Lambda, इ.) आणि applications चे metrics, logs आणि events track करते.
+
+5.2 Core Components
+Metrics: CPU utilization, network traffic, disk I/O यासारखे numeric data points
+Logs (CloudWatch Logs): Applications/services चे logs centralized ठिकाणी store करणे
+Alarms: Metric threshold cross झाल्यावर automatic notification/action
+Dashboards: Metrics visualize करण्यासाठी custom dashboards
+Events/EventBridge: AWS resources मध्ये होणाऱ्या changes वर react करणे (automation trigger)
+Logs Insights: Log data query आणि analyze करण्यासाठी powerful query language
+5.3 Example: EC2 Metric Alarm (CLI)
+bash
+aws cloudwatch put-metric-alarm \
+  --alarm-name "High-CPU-Utilization" \
+  --metric-name CPUUtilization \
+  --namespace AWS/EC2 \
+  --statistic Average \
+  --period 300 \
+  --threshold 80 \
+  --comparison-operator GreaterThanThreshold \
+  --dimensions Name=InstanceId,Value=i-0abcd1234efgh5678 \
+  --evaluation-periods 2 \
+  --alarm-actions arn:aws:sns:ap-south-1:123456789012:AlertTopic
+5.4 CloudWatch Logs Example
+bash
+aws logs create-log-group --log-group-name my-app-logs
+aws logs create-log-stream --log-group-name my-app-logs --log-stream-name app-instance-1
+5.5 CloudWatch Logs Insights Query Example
+fields @timestamp, @message
+| filter @message like /ERROR/
+| sort @timestamp desc
+| limit 20
+5.6 Use Cases
+EC2/RDS/Lambda resources चे performance monitoring
+Auto Scaling साठी metrics trigger (CPU जास्त झाल्यास नवीन instance launch)
+Application logs centralized पद्धतीने analyze करणे
+Billing/cost anomaly detection
+Security event monitoring (CloudTrail सोबत एकत्र)
+5.7 फायदे
+AWS सोबत native integration (कुठलाही extra agent install न करता बरेच metrics मिळतात)
+Auto Scaling, Lambda triggers सोबत सहज integrate होते
+Cost-effective (pay-as-you-go)
+Centralized logging आणि monitoring एकाच ठिकाणी
+5.8 Best Practices
+Custom metrics वापरून business-specific KPIs track करणे
+Log retention period योग्य set करणे (cost control साठी)
+Composite alarms वापरून multiple conditions combine करणे
+CloudWatch + SNS वापरून automated alerting/notification setup करणे
+Dashboards team नुसार वेगळे ठेवणे (Dev/Ops/Management)
+6. थोडक्यात तुलना (Quick Comparison)
+Tool	मुख्य उपयोग	Category
+Docker	Application containerization	Container Platform
+Terraform	Infrastructure as Code	IaC / Provisioning
+Jenkins	CI/CD automation	Build & Deployment Automation
+Datadog	Monitoring & Observability	Third-party APM/Monitoring
+CloudWatch	AWS-native monitoring	Cloud Monitoring
+7. एकत्रित DevOps Workflow (Overview)
+Developer Code Push (GitHub)
+        │
+        ▼
+   Jenkins Pipeline Trigger (Webhook)
+        │
+   ┌────┴─────┐
+   Build      Test
+   (Docker)   (Unit/Integration)
+        │
+        ▼
+  Docker Image → Push to Registry
+        │
+        ▼
+Terraform (Infra Provision/Update)
+        │
+        ▼
+   Deploy to AWS (EC2/ECS/EKS)
+        │
+        ▼
+Monitoring: Datadog + CloudWatch
+   (Metrics, Logs, Alerts)
