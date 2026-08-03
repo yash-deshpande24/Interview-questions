@@ -1,0 +1,310 @@
+# AWS EC2 & RDS Blue/Green Deployment — Complete Notes
+
+---
+
+## 🖥️ 1. EC2 (Elastic Compute Cloud) म्हणजे काय?
+
+EC2 हे AWS चे **virtual server service** आहे. तुम्ही cloud मध्ये तुमचा स्वतःचा server चालवू शकता — physical hardware न घेता, म्हणजे कोणतंही data center स्वतः उभं करण्याची गरज नाही.
+
+- Pay-as-you-go model — जितका वापर तितकं बिल
+- Minutes मध्ये server launch होतो
+- Scale up/down कधीही करता येतो
+- Linux, Windows दोन्ही OS support करतो
+
+---
+
+## 📦 2. EC2 चे मुख्य Components
+
+### 2.1 Instance Types
+
+| Category | Use Case | Examples | Detail |
+|---|---|---|---|
+| General Purpose | Web servers, Dev/Test | t3, m6i | Balanced CPU/Memory/Network — साधारण workloads साठी best |
+| Compute Optimized | Gaming, ML, HPC | c6i, c7g | High CPU-to-memory ratio — batch processing, gaming servers |
+| Memory Optimized | Databases, Cache | r6i, x2idn | Large in-memory datasets, real-time big data analytics |
+| Storage Optimized | Big Data, Hadoop | i3, d3 | High sequential read/write, local NVMe storage |
+| GPU Instances | AI/ML, Video rendering | p4, g5 | Deep learning training, video encoding, graphics-heavy apps |
+
+> 💡 Tip: नाव मधली letter समजून घ्या — `t`=burstable, `m`=general, `c`=compute, `r`=RAM heavy, `g`/`p`=GPU, `i`=IOPS storage.
+
+### 2.2 AMI (Amazon Machine Image)
+
+- हे एक **pre-configured template** असते
+- OS + Software + Config सगळं एकत्र असतं
+- Custom AMI पण बनवता येते (आपल्या server ची exact copy)
+- AWS Marketplace वर ready AMIs मिळतात (उदा. WordPress, Jenkins आधीच install असलेले)
+- एकाच AMI वरून हवे तितके identical instances launch करता येतात — consistency साठी उपयुक्त
+
+### 2.3 EBS (Elastic Block Store) — Storage
+
+```
+├── gp3 (General Purpose SSD)      → Default, balanced — बहुतेक workloads साठी
+├── io2 (Provisioned IOPS SSD)     → High-performance DB, mission-critical apps
+├── st1 (Throughput Optimized HDD) → Big Data, log processing
+└── sc1 (Cold HDD)                 → Archive data, क्वचित access होणारा data
+```
+
+- EBS volume instance पासून detach/attach करता येतो
+- Snapshot घेऊन backup ठेवता येतो
+- Instance बंद केला तरी EBS data टिकून राहतो (Elastic असल्यामुळे persistent)
+
+### 2.4 Security Groups
+
+- Instance साठी **Virtual Firewall** आहे
+- Inbound/Outbound rules define करतो
+- Stateful असतो — म्हणजे inbound allow केलं की return traffic आपोआप allow होतो
+- Example rules:
+  - Port 22 (SSH) — remote login
+  - Port 80 (HTTP) — web traffic
+  - Port 443 (HTTPS) — secure web traffic
+  - Port 3306 (MySQL) — database access
+
+### 2.5 Key Pairs
+
+- SSH login साठी Public/Private key pair
+- `.pem` file download करावी लागते (launch च्या वेळी फक्त एकदाच मिळते — जपून ठेवायची)
+- Linux → SSH वापरून connect होतो
+- Windows → RDP (Remote Desktop) वापरून, password key ने decrypt होतो
+
+```bash
+chmod 400 mykey.pem
+ssh -i mykey.pem ec2-user@<public-ip>
+```
+
+### 2.6 Elastic IP
+
+- Static Public IP address
+- Instance restart केल्यावर IP बदलत नाही (normal public IP restart वर बदलते)
+- Free जर instance running असेल तर; instance stop असताना charge लागू शकतो
+- एका account मध्ये limited Elastic IPs free असतात
+
+### 2.7 User Data
+
+Instance launch होताना automatically run होणारे **bootstrap scripts** — पहिल्यांदा boot होताना एकदाच run होतात.
+
+```bash
+#!/bin/bash
+yum update -y
+yum install -y httpd
+systemctl start httpd
+systemctl enable httpd
+echo "<h1>Server Ready</h1>" > /var/www/html/index.html
+```
+
+> याचा उपयोग: नवीन instance आपोआप ready-to-use बनवण्यासाठी, manual configuration टाळण्यासाठी.
+
+---
+
+## 💰 3. EC2 Pricing Models
+
+| Model | कधी वापरावे | Savings |
+|---|---|---|
+| On-Demand | Testing, unpredictable workload | — |
+| Reserved (1-3 yr) | Steady, predictable workload | ~72% |
+| Spot Instances | Fault-tolerant, batch jobs | ~90% |
+| Savings Plans | Flexible commitment | ~66% |
+| Dedicated Host | Compliance, licensing needs | Custom |
+
+**Detail:**
+- **On-Demand** → कोणताही commitment नाही, per-second billing, सर्वात flexible पण costly
+- **Reserved Instances** → 1 किंवा 3 वर्षांचं commitment केलं की मोठी discount मिळते; predictable, long-running workloads साठी best
+- **Spot Instances** → AWS चा unused capacity स्वस्तात मिळतो, पण AWS ला गरज पडली तर 2-मिनिटांच्या notice वर instance terminate होऊ शकतो — म्हणून fault-tolerant/batch jobs साठीच वापरावं
+- **Savings Plans** → Reserved पेक्षा जास्त flexible, compute usage commitment (instance type बदलला तरी चालतो)
+- **Dedicated Host** → संपूर्ण physical server तुमच्यासाठी reserved — licensing (BYOL) आणि compliance requirements साठी
+
+---
+
+## 🌐 4. Networking in EC2
+
+```
+VPC
+ └── Subnet (Public / Private)
+      └── EC2 Instance
+           ├── Security Group (Firewall)
+           ├── ENI (Network Interface)
+           └── Elastic IP (Optional)
+```
+
+- **Public Subnet** → Internet Gateway attached असतो, त्यामुळे direct internet access मिळतो
+- **Private Subnet** → थेट Internet access नसतो; outbound साठी **NAT Gateway** वापरतो (inbound अजिबात नाही, फक्त outbound)
+- **Placement Groups** → Low latency साठी instances एकमेकांच्या जवळ (same rack/AZ) ठेवतो — तीन प्रकार: Cluster, Spread, Partition
+
+---
+
+## ⚡ 5. Auto Scaling + Load Balancer
+
+```
+Internet
+   ↓
+Application Load Balancer (ALB)
+   ↓
+Auto Scaling Group
+ ├── EC2 Instance 1
+ ├── EC2 Instance 2
+ └── EC2 Instance 3 (auto adds/removes)
+```
+
+- **Minimum, Desired, Maximum** capacity set करता येते
+- **Scaling Policies:**
+  - CPU > 70% → नवीन instance add होतो (Scale-Out)
+  - CPU < 30% → instance terminate होतो (Scale-In)
+- **Load Balancer चे फायदे:**
+  - Traffic अनेक instances मध्ये evenly distribute करतो
+  - Unhealthy instance असेल तर त्याला traffic पाठवणं बंद करतो (Health Checks)
+  - High availability आणि fault tolerance देतो
+
+---
+
+## 🔵🟢 6. RDS मध्ये Blue/Green Deployment
+
+### 6.1 Blue/Green म्हणजे काय?
+
+```
+BLUE (Current Production) ──────► Users येतात इथे
+  └── RDS MySQL v1 + Old Schema
+
+GREEN (New Staging Copy)
+  └── RDS MySQL v2 + New Schema (testing चालू)
+```
+
+- **Blue** = Current live database (production)
+- **Green** = Exact copy जिथे नवीन changes test होतात
+- Switch करताना **zero downtime किंवा minimal downtime**
+- Risk-free upgrades/changes करण्यासाठी वापरतात (engine upgrade, schema change, parameter change)
+
+### 6.2 Step-by-Step Process
+
+**Step 1: Blue/Green Deployment Create करा**
+
+```
+AWS Console → RDS → तुमचा DB select करा → Actions → Create Blue/Green Deployment
+
+Settings:
+├── Green DB Identifier: mydb-green
+├── DB Engine Version: (upgrade करायचा असल्यास बदला)
+├── DB Parameter Group: (optional)
+└── Enable Binlog: ✅ (replication साठी आवश्यक)
+```
+
+AWS automatically Green environment बनवतो — exact copy of Blue!
+
+**Step 2: Replication चालू होते**
+
+```
+BLUE DB ──[Binary Log Replication]──► GREEN DB
+  (Live writes होत राहतात)              (sync होत राहतो)
+```
+
+- Green हे Blue चा live replica असतो
+- Green वर changes deploy करा (schema migration, engine upgrade इ.)
+- Replication lag monitor करत राहणं गरजेचं आहे
+
+**Step 3: Green वर Testing करा**
+
+```bash
+# Green DB endpoint ला connect करा
+mysql -h mydb-green.xxxx.rds.amazonaws.com \
+      -u admin -p
+
+# Test queries चालवा
+SELECT * FROM users LIMIT 10;
+SHOW CREATE TABLE orders;
+```
+
+- Application च्या dev/staging environment ला Green endpoint द्या
+- Performance test, regression test, load test करा
+- सगळं व्यवस्थित काम करतंय याची खात्री करा — इथे risk घेतला तरी production वर परिणाम होत नाही
+
+**Step 4: Switchover (The Magic Moment! 🎯)**
+
+```
+Actions → Switch over
+
+Before Switchover:
+  Blue → Production (users येतात)
+  Green → Staging (testing)
+
+During Switchover (~1 min):
+  ① Blue वर नवीन writes बंद होतात
+  ② Green पूर्णपणे sync होतो
+  ③ Endpoints swap होतात!
+
+After Switchover:
+  Green → Production (आता users येतात)
+  Blue → Standby (rollback साठी available)
+```
+
+✅ **Endpoint बदलत नाही!** — Application config मध्ये कोणताही बदल करावा लागत नाही, कारण AWS DNS/endpoint routing internally handle करतो.
+
+**Step 5: Verify करा**
+
+```sql
+-- Production (आधीचा Green) वर check करा
+SHOW VARIABLES LIKE 'innodb_version';
+SELECT COUNT(*) FROM your_table;
+
+-- Application logs monitor करा
+-- Errors नाहीत ना? ✅
+```
+
+**Step 6: Cleanup**
+
+- सगळं ठीक आहे? → Blue DB delete करा (cost save होईल, कारण दोन्ही DB चालू असल्यास double cost)
+- Problem आलं? → Switchback करा Blue वर (rollback सोपं आहे, कारण Blue अजून available आहे)
+
+### 6.3 ⚖️ Blue/Green vs Traditional Deployment
+
+| Feature | Traditional | Blue/Green |
+|---|---|---|
+| Downtime | जास्त (minutes) | ~1 minute किंवा कमी |
+| Rollback | कठीण | Easy (Blue अजून available) |
+| Risk | High | Low |
+| Cost | कमी | थोडा जास्त (2 DB चालतात) |
+| Testing | Production वर | Isolated Green वर |
+
+### 6.4 ⚠️ Important Points
+
+**✅ Supported:** MySQL, PostgreSQL, MariaDB (RDS) — Aurora पण support करतो
+
+**❌ Not Supported:**
+- RDS SQL Server → Blue/Green नाही
+- Multi-AZ Cluster → काही limitations आहेत
+
+**💡 Tips:**
+- Green वर schema changes आधी apply करा (testing साठी वेळ मिळतो)
+- Binlog retention वाढवा switchover आधी (replication smooth राहण्यासाठी)
+- Read Replicas असतील तर ते पण Green मध्ये येतात
+- Switchover window low-traffic time ला ठेवा (उदा. मध्यरात्री किंवा weekend)
+- Switchover आधी एकदा full backup/snapshot घेणं चांगली practice आहे
+
+### 6.5 🔄 Complete Flow Summary
+
+```
+1. Create Blue/Green → Green copy तयार होते
+        ↓
+2. Replication चालू → Blue → Green sync
+        ↓
+3. Green वर deploy → Schema/Version changes
+        ↓
+4. Testing → Green endpoint वर verify
+        ↓
+5. Switchover → Endpoints swap (~1 min)
+        ↓
+6. Monitor → Errors check करा
+        ↓
+7. Cleanup → Blue delete (किंवा rollback)
+```
+
+---
+
+## 📌 Quick Recap (Cheat Sheet)
+
+- **EC2** = Virtual server on cloud (Instance, AMI, EBS, Security Group, Key Pair, Elastic IP, User Data)
+- **Pricing** = On-Demand > Reserved > Spot > Savings Plan > Dedicated Host (flexibility ते cost-saving नुसार क्रम)
+- **Networking** = VPC → Subnet (Public/Private) → EC2 + SG + ENI + EIP
+- **Auto Scaling** = ALB + ASG मिळून high availability आणि automatic capacity management देतात
+- **RDS Blue/Green** = Blue (live) + Green (copy) → test on Green → switchover → old Blue becomes rollback safety net
+
+---
+
+*Notes prepared for revision — EC2 & RDS Blue/Green Deployment topics.*
