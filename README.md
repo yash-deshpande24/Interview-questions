@@ -68,7 +68,6 @@ This repository contains study materials, Q&A documents, cheat sheets, and inter
 | `two years of experience.md` | Interview Q&A tailored for 2 years of experience | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/two%20years%20of%20experience.md) |
 
 ---
-
 ### 📁 Notes Folder
 
 Additional topic-wise deep-dive notes are organized inside the [`Notes/`](https://github.com/yash-deshpande24/Interview-questions/tree/main/Notes) folder.
@@ -81,11 +80,10 @@ Additional topic-wise deep-dive notes are organized inside the [`Notes/`](https:
 | `Devops aws interview notes .md` | Combined DevOps + AWS interview preparation notes | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/Notes/Devops%20aws%20interview%20notes%20.md) |
 | `Devops notes .md` | Docker, Terraform, Jenkins CI/CD, Datadog & AWS CloudWatch detailed notes | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/Notes/Devops%20notes%20.md) |
 | `Docker(Notes).pdf` | Docker fundamentals — images, containers, Dockerfile, Docker Compose | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/Notes/Docker(Notes).pdf) |
+| `Ec2 rds bluegreen notes .md` | AWS EC2 overview & RDS Blue/Green deployment detailed notes | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/Notes/Ec2%20rds%20bluegreen%20notes%20.md) |
 | `Linux(notes).pdf` | Linux commands, file permissions, process management | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/Notes/Linux(notes).pdf) |
 | `LinuxNotes.docx` | Additional Linux notes (Word format) | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/Notes/LinuxNotes.docx) |
 | `terraform.pdf` | Terraform basics — providers, resources, state management, modules | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/Notes/terraform.pdf) |
-| `Ec2 rds bluegreen notes .md` | AWS EC2 overview & RDS Blue/Green deployment detailed notes | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/Notes/Ec2 rds bluegreen notes ·md) |
----
 
 ## 🗂️ Topics Covered
 
