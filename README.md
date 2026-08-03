@@ -84,7 +84,7 @@ Additional topic-wise deep-dive notes are organized inside the [`Notes/`](https:
 | `Linux(notes).pdf` | Linux commands, file permissions, process management | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/Notes/Linux(notes).pdf) |
 | `LinuxNotes.docx` | Additional Linux notes (Word format) | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/Notes/LinuxNotes.docx) |
 | `terraform.pdf` | Terraform basics — providers, resources, state management, modules | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/Notes/terraform.pdf) |
-
+| `Ec2 rds bluegreen notes .md` | AWS EC2 overview & RDS Blue/Green deployment detailed notes | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/Notes/Ec2%20rds%20bluegreen%20notes%20.md) |
 ---
 
 ## 🗂️ Topics Covered
