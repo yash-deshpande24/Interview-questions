@@ -1,0 +1,519 @@
+# 🖥️ AWS EC2 & RDS Blue/Green Deployment — Interview Q&A
+
+> 30 Main Interview Questions & Answers | English | Beginner to Advanced
+
+---
+
+## 🟠 SECTION 1: AWS EC2 — Full Information & Interview Q&A
+
+### 📌 What is EC2?
+**Amazon Elastic Compute Cloud (EC2)** is a web service that provides resizable virtual servers (instances) in the AWS cloud. It allows you to run applications without investing in physical hardware.
+
+---
+
+### Q1. What is Amazon EC2 and why is it used?
+
+**Answer:**  
+Amazon EC2 (Elastic Compute Cloud) is a cloud-based virtual server service by AWS. It allows users to launch and manage virtual machines (called **instances**) on demand.  
+
+**Why it is used:**
+- Host websites and web applications
+- Run backend servers and APIs
+- Process big data workloads
+- Run development and testing environments
+- Scale compute capacity up or down as needed
+
+---
+
+### Q2. What are EC2 Instance Types?
+
+**Answer:**  
+AWS EC2 instances are grouped into families based on their use case:
+
+| Family | Type | Use Case |
+|--------|------|----------|
+| **General Purpose** | t3, t4g, m5, m6i | Web servers, dev environments |
+| **Compute Optimized** | c5, c6i | Gaming, ML inference, batch jobs |
+| **Memory Optimized** | r5, r6i, x1 | Databases, in-memory caching |
+| **Storage Optimized** | i3, d2 | Data warehouses, NoSQL DBs |
+| **Accelerated Computing** | p3, g4dn | GPU workloads, deep learning |
+
+---
+
+### Q3. What is an AMI (Amazon Machine Image)?
+
+**Answer:**  
+An **AMI** is a pre-configured template used to launch EC2 instances. It includes:
+- The **Operating System** (Linux, Windows, etc.)
+- **Application software** pre-installed
+- **EBS snapshot** (root volume)
+- **Permissions** (who can use it)
+- **Block device mapping**
+
+You can use AWS-provided AMIs, Marketplace AMIs, or create your own **custom AMI**.
+
+---
+
+### Q4. What are EC2 Pricing Models?
+
+**Answer:**
+
+| Pricing Model | Description | Best For |
+|---------------|-------------|----------|
+| **On-Demand** | Pay per hour/second, no commitment | Short-term, unpredictable workloads |
+| **Reserved Instances** | 1 or 3 year commitment, up to 75% discount | Steady-state workloads |
+| **Spot Instances** | Bid on unused capacity, up to 90% discount | Batch jobs, fault-tolerant apps |
+| **Savings Plans** | Flexible pricing with commitment | Mixed workloads |
+| **Dedicated Hosts** | Physical server dedicated to you | Compliance, licensing |
+
+---
+
+### Q5. What is an EC2 Security Group?
+
+**Answer:**  
+A **Security Group** acts as a **virtual firewall** for EC2 instances. It controls **inbound and outbound traffic**.
+
+Key points:
+- Security groups are **stateful** — if you allow inbound traffic, the response is automatically allowed outbound
+- You define rules based on **protocol, port, and IP range**
+- Default: **all inbound blocked**, **all outbound allowed**
+- Multiple security groups can be attached to one instance
+
+Example: Allow SSH (port 22) only from your IP address.
+
+---
+
+### Q6. What is the difference between Security Groups and NACLs?
+
+**Answer:**
+
+| Feature | Security Group | NACL |
+|---------|---------------|------|
+| Level | Instance level | Subnet level |
+| State | Stateful | Stateless |
+| Rules | Allow only | Allow and Deny |
+| Evaluation | All rules evaluated | Rules evaluated in order |
+| Default | Deny all inbound | Allow all traffic |
+
+---
+
+### Q7. What is an Elastic IP in EC2?
+
+**Answer:**  
+An **Elastic IP (EIP)** is a **static, public IPv4 address** that you can associate with your EC2 instance.
+
+- By default, EC2 public IPs **change** when the instance is stopped/started
+- Elastic IP remains **fixed** even after stop/start
+- You can **remap** it to another instance quickly during failures
+- AWS charges for Elastic IPs that are **allocated but not in use**
+
+---
+
+### Q8. What is EC2 Auto Scaling?
+
+**Answer:**  
+**Auto Scaling** automatically increases or decreases the number of EC2 instances based on demand.
+
+Components:
+- **Launch Template/Configuration** – defines what type of instance to launch
+- **Auto Scaling Group (ASG)** – defines min, max, and desired capacity
+- **Scaling Policies** – rules to trigger scaling (CPU > 80%, schedule, etc.)
+
+Types of scaling:
+- **Dynamic Scaling** – based on CloudWatch metrics
+- **Scheduled Scaling** – at specific times
+- **Predictive Scaling** – uses ML to forecast demand
+
+---
+
+### Q9. What is the difference between Stop, Terminate, and Reboot in EC2?
+
+**Answer:**
+
+| Action | Effect |
+|--------|--------|
+| **Stop** | Instance shuts down, EBS data retained, no compute charges |
+| **Terminate** | Instance is deleted permanently, EBS deleted (if configured) |
+| **Reboot** | OS restarts, same instance, data retained, IP stays same |
+| **Hibernate** | RAM contents saved to EBS, fast restart |
+
+---
+
+### Q10. What are EC2 Placement Groups?
+
+**Answer:**  
+Placement Groups control **how instances are physically placed** in AWS data centers.
+
+| Type | Description | Use Case |
+|------|-------------|----------|
+| **Cluster** | All instances in same AZ, low latency | HPC, big data |
+| **Spread** | Instances on different hardware | High availability |
+| **Partition** | Groups of instances on separate racks | Hadoop, Cassandra, Kafka |
+
+---
+
+### Q11. What is EBS and how is it used with EC2?
+
+**Answer:**  
+**Amazon EBS (Elastic Block Store)** provides **persistent block storage** for EC2 instances.
+
+Key features:
+- Data **persists** even after instance stop (not terminate)
+- Can be **detached and attached** to another instance
+- Supports **snapshots** for backup
+- EBS volume types: **gp3, gp2, io1, io2, st1, sc1**
+
+> **gp3** — General purpose SSD, best price-performance  
+> **io2** — High IOPS for databases  
+> **st1** — Throughput-optimized HDD for big data
+
+---
+
+### Q12. What is EC2 User Data?
+
+**Answer:**  
+**User Data** is a script that runs **automatically when an EC2 instance starts for the first time**.
+
+Used for:
+- Installing software (Apache, Nginx, Docker)
+- Setting environment variables
+- Pulling code from GitHub
+- Running configuration scripts
+
+Example:
+```bash
+#!/bin/bash
+yum update -y
+yum install httpd -y
+systemctl start httpd
+systemctl enable httpd
+```
+
+---
+
+### Q13. What is an EC2 Key Pair?
+
+**Answer:**  
+A **Key Pair** consists of a **public key** (stored by AWS) and a **private key** (downloaded by you `.pem` file).
+
+- Used to **SSH into Linux** instances or **decrypt Windows passwords**
+- AWS stores the public key on the instance
+- You must keep the private key safe — AWS does not store it
+- If lost, you cannot access the instance via SSH without workarounds
+
+---
+
+### Q14. What is EC2 Instance Metadata?
+
+**Answer:**  
+**Instance Metadata** is data about your EC2 instance that you can access from within the instance itself.
+
+Access via:
+```bash
+curl http://169.254.169.254/latest/meta-data/
+```
+
+Includes:
+- Instance ID, type, region
+- Public/private IP
+- IAM role credentials
+- AMI ID, hostname
+
+---
+
+### Q15. What is the difference between Instance Store and EBS?
+
+**Answer:**
+
+| Feature | Instance Store | EBS |
+|---------|---------------|-----|
+| Persistence | Temporary (lost on stop) | Persistent |
+| Performance | Very high (physical disk) | High (network-based) |
+| Backup | Not possible | Snapshots available |
+| Use Case | Cache, temp data | OS, databases |
+| Cost | Included in instance price | Additional cost |
+
+---
+
+## 🔵🟢 SECTION 2: RDS Blue/Green Deployment
+
+### 📌 What is Blue/Green Deployment in RDS?
+
+**Blue/Green Deployment** in Amazon RDS is a technique to safely deploy database changes by maintaining **two separate environments**:
+
+- 🔵 **Blue** = Current **production** environment (live, stable)
+- 🟢 **Green** = New **staging** environment (copy of production with your changes)
+
+You test on Green, then **switch traffic** from Blue to Green with minimal downtime.
+
+---
+
+### Q16. What is Blue/Green Deployment in Amazon RDS?
+
+**Answer:**  
+AWS RDS Blue/Green Deployment creates a **fully managed staging environment (Green)** that mirrors your production database (Blue). You can:
+- Apply schema changes on Green
+- Test the changes safely
+- Switch over from Blue to Green in **under a minute**
+- Keep Blue as rollback option
+
+Supported engines: **MySQL, MariaDB, RDS PostgreSQL, Aurora MySQL, Aurora PostgreSQL**
+
+---
+
+### Q17. How does RDS Blue/Green Deployment work step by step?
+
+**Answer:**
+
+**Step 1 — Create Green Environment:**
+- AWS creates a copy of your production (Blue) RDS instance
+- Green is kept in sync with Blue using **logical replication**
+
+**Step 2 — Make Changes on Green:**
+- Apply schema changes (ALTER TABLE, new indexes, etc.)
+- Upgrade database engine version
+- Change instance type or configuration
+- Test application against Green
+
+**Step 3 — Switchover:**
+- AWS performs a **managed switchover**
+- Blue becomes read-only temporarily
+- Replication lag drops to near zero
+- Traffic switches from Blue → Green
+- Green becomes the new production
+
+**Step 4 — Cleanup:**
+- Blue environment is retained for rollback
+- Once satisfied, delete the old Blue environment
+
+---
+
+### Q18. What is the benefit of RDS Blue/Green Deployment over traditional upgrades?
+
+**Answer:**
+
+| Traditional Upgrade | Blue/Green Deployment |
+|--------------------|-----------------------|
+| Done on production directly | Done on separate Green copy |
+| Downtime during upgrade | Near-zero downtime switchover |
+| No easy rollback | Blue retained for instant rollback |
+| Risky — one mistake = outage | Safe — test fully before switching |
+| Manual process | Managed by AWS automatically |
+
+---
+
+### Q19. What is the switchover process in RDS Blue/Green Deployment?
+
+**Answer:**  
+During switchover AWS performs these steps automatically:
+
+1. **Stops new writes** to the Blue (production) environment
+2. **Waits** for Green to catch up with all replication lag
+3. **Renames** the instances — Green takes the Blue's endpoint name
+4. **Redirects traffic** to the new Green environment
+5. Blue environment is kept available for rollback
+
+> Typical switchover time: **less than 1 minute**  
+> Applications reconnect automatically using the **same endpoint**
+
+---
+
+### Q20. What happens to the endpoint during Blue/Green switchover?
+
+**Answer:**  
+The **endpoints remain the same** — this is one of the biggest advantages.
+
+- The Green environment **inherits the Blue's DNS endpoint** after switchover
+- Applications do **not need to change their connection strings**
+- AWS handles the DNS rename transparently
+- Connection interruption is typically **only a few seconds**
+
+---
+
+### Q21. Can you roll back a Blue/Green Deployment?
+
+**Answer:**  
+Yes! The Blue environment is **not deleted automatically** after switchover.
+
+- If issues are found in Green (now production), you can **switch back to Blue**
+- Simply perform another switchover back to the original Blue instance
+- AWS retains the Blue environment until you manually delete it
+- This makes Blue/Green deployments **extremely safe** for production databases
+
+---
+
+### Q22. What are the limitations of RDS Blue/Green Deployment?
+
+**Answer:**
+
+- Not supported for **RDS SQL Server**
+- **Cross-Region** replication not supported for Green environment
+- If Blue has **Read Replicas**, they are not included in Green by default
+- Switchover requires a **brief application reconnect** (a few seconds)
+- Blue/Green cannot be used if the DB uses **AWS IAM authentication** in certain configurations
+- Must use **RDS Proxy** or connection pooling to minimize reconnection impact
+
+---
+
+### Q23. What types of changes can you make in the Green environment?
+
+**Answer:**  
+You can safely test and apply:
+
+✅ **Schema changes** — ALTER TABLE, ADD COLUMN, DROP INDEX  
+✅ **Engine version upgrades** — e.g., MySQL 5.7 → 8.0  
+✅ **Instance type changes** — e.g., db.t3.medium → db.r5.large  
+✅ **Parameter group changes** — DB configuration tuning  
+✅ **Storage changes** — increase storage size  
+✅ **Application compatibility testing** — connect your app to Green
+
+---
+
+### Q24. How is replication maintained between Blue and Green?
+
+**Answer:**  
+AWS uses **logical replication** to keep Green in sync with Blue:
+
+- For **MySQL/MariaDB**: Uses **binary log (binlog) replication**
+- For **PostgreSQL**: Uses **logical replication slots**
+- Changes made on Blue are **continuously replicated** to Green
+- Replication lag is monitored — switchover only happens when lag is near **zero**
+- This ensures **no data loss** during the switchover
+
+---
+
+### Q25. What is the difference between RDS Blue/Green and Read Replicas?
+
+**Answer:**
+
+| Feature | Blue/Green Deployment | Read Replica |
+|---------|----------------------|--------------|
+| Purpose | Safe deployments & upgrades | Read scaling |
+| Writeable | Green is writeable | Read-only |
+| Switchover | Automated, DNS swap | Manual promotion |
+| Use Case | Schema changes, version upgrades | Offload read traffic |
+| Rollback | Easy (Blue retained) | Manual re-setup needed |
+
+---
+
+## 🎯 SECTION 3: Mixed / Advanced Questions
+
+### Q26. How do you reduce EC2 costs in production?
+
+**Answer:**
+- Use **Reserved Instances** for steady workloads (save up to 75%)
+- Use **Spot Instances** for batch/fault-tolerant jobs (save up to 90%)
+- Use **Auto Scaling** to run only what you need
+- Right-size instances using **AWS Compute Optimizer**
+- Use **Savings Plans** for flexible commitment discounts
+- Stop/terminate unused instances and EBS volumes
+- Use **S3** instead of EBS for static files
+
+---
+
+### Q27. What is EC2 Hibernate and when would you use it?
+
+**Answer:**  
+**Hibernate** saves the instance's **RAM contents to the root EBS volume** and stops the instance.
+
+When started again:
+- The instance boots **faster** (RAM is restored from EBS)
+- Running processes **continue from where they left off**
+
+Use cases:
+- Long-running processes you don't want to restart
+- Development environments where you want to "pause" work
+- Services that take long to warm up (cache, in-memory state)
+
+Requirements: Instance must have an **encrypted EBS root volume**.
+
+---
+
+### Q28. What is EC2 Instance Connect and how is it different from SSH?
+
+**Answer:**
+
+| Feature | EC2 Instance Connect | Traditional SSH |
+|---------|---------------------|----------------|
+| Key management | No permanent key needed | Requires .pem file |
+| Access method | Browser or AWS CLI | Terminal/SSH client |
+| Security | Temporary SSH key (60 seconds) | Permanent key pair |
+| IAM integration | Uses IAM permissions | No IAM control |
+| Audit | CloudTrail logged | Not natively logged |
+
+EC2 Instance Connect is **more secure** as it uses short-lived keys managed by AWS.
+
+---
+
+### Q29. What is the difference between Vertical and Horizontal Scaling in EC2?
+
+**Answer:**
+
+| Type | Description | EC2 Method |
+|------|-------------|------------|
+| **Vertical Scaling** | Increase instance size (more CPU/RAM) | Change instance type (t3.small → m5.large) |
+| **Horizontal Scaling** | Add more instances | Auto Scaling Group, Load Balancer |
+
+- Vertical scaling requires **downtime** to resize
+- Horizontal scaling has **no downtime** and is preferred for high availability
+- AWS recommends **horizontal scaling** with Auto Scaling + ELB
+
+---
+
+### Q30. Explain a real-world scenario where you would use RDS Blue/Green Deployment.
+
+**Answer:**
+
+**Scenario:** Your company runs an e-commerce site with MySQL RDS in production. You need to upgrade from **MySQL 5.7 to MySQL 8.0** without downtime during business hours.
+
+**Solution using Blue/Green:**
+
+1. **Create Green environment** — AWS clones your MySQL 5.7 production DB
+2. **Upgrade Green** — Apply MySQL 8.0 upgrade on the Green copy
+3. **Test** — Point your staging/dev app to Green, run regression tests
+4. **Fix issues** — Any compatibility issues fixed on Green, not production
+5. **Schedule switchover** — During low-traffic window (e.g., 2 AM)
+6. **Switchover** — AWS switches traffic in under 60 seconds
+7. **Monitor** — Watch application metrics on the new Green (now production)
+8. **Retain Blue** — Keep old MySQL 5.7 instance for 1-2 days as rollback
+9. **Delete Blue** — Once confident, remove the old environment
+
+**Result:** Zero unplanned downtime, safe rollback option, no application code changes needed! ✅
+
+---
+
+## 📊 Quick Revision Summary
+
+### EC2 Key Points:
+```
+✅ EC2 = Virtual Servers in AWS Cloud
+✅ AMI = Template to launch instances
+✅ Security Group = Firewall (stateful)
+✅ NACL = Subnet-level firewall (stateless)
+✅ EBS = Persistent storage
+✅ Instance Store = Temporary storage
+✅ Elastic IP = Static public IP
+✅ Auto Scaling = Automatic capacity management
+✅ Placement Groups = Physical placement control
+✅ User Data = Bootstrap script on first launch
+```
+
+### RDS Blue/Green Key Points:
+```
+🔵 Blue = Current Production (stable)
+🟢 Green = Staging Copy (for changes)
+✅ Replication = Binlog/Logical (near real-time)
+✅ Switchover = Under 60 seconds
+✅ Endpoint = Stays the same after switchover
+✅ Rollback = Blue retained until you delete it
+✅ Supported = MySQL, MariaDB, PostgreSQL, Aurora
+❌ Not Supported = SQL Server, Cross-Region
+```
+
+---
+
+> 💡 **Pro Tip for Interviews:** Always relate your answers to **real-world use cases**. Saying *"I used Blue/Green deployment when we upgraded our RDS MySQL version in production with zero downtime"* is far more impressive than just explaining the concept.
+
+---
+
+*📁 Part of the [Interview-questions Repository](https://github.com/yash-deshpande24/Interview-questions)*
