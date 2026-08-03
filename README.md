@@ -69,6 +69,24 @@ This repository contains study materials, Q&A documents, cheat sheets, and inter
 
 ---
 
+### 📁 Notes Folder
+
+Additional topic-wise deep-dive notes are organized inside the [`Notes/`](https://github.com/yash-deshpande24/Interview-questions/tree/main/Notes) folder.
+
+| File | Description | Link |
+|------|-------------|------|
+| `AWS (VPC).pdf` | AWS Virtual Private Cloud (VPC) — subnets, route tables, security groups, NAT gateway | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/Notes/AWS%20(VPC).pdf) |
+| `AWS(cloud computing).pdf` | Cloud computing basics — AWS services overview, IAM, EC2, S3 | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/Notes/AWS(cloud%20computing).pdf) |
+| `Aws detailed interview notes .md` | AWS interview questions with detailed answers | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/Notes/Aws%20detailed%20interview%20notes%20.md) |
+| `Devops aws interview notes .md` | Combined DevOps + AWS interview preparation notes | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/Notes/Devops%20aws%20interview%20notes%20.md) |
+| `Devops notes .md` | Docker, Terraform, Jenkins CI/CD, Datadog & AWS CloudWatch detailed notes | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/Notes/Devops%20notes%20.md) |
+| `Docker(Notes).pdf` | Docker fundamentals — images, containers, Dockerfile, Docker Compose | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/Notes/Docker(Notes).pdf) |
+| `Linux(notes).pdf` | Linux commands, file permissions, process management | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/Notes/Linux(notes).pdf) |
+| `LinuxNotes.docx` | Additional Linux notes (Word format) | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/Notes/LinuxNotes.docx) |
+| `terraform.pdf` | Terraform basics — providers, resources, state management, modules | [View](https://github.com/yash-deshpande24/Interview-questions/blob/main/Notes/terraform.pdf) |
+
+---
+
 ## 🗂️ Topics Covered
 
 ```
@@ -78,6 +96,8 @@ This repository contains study materials, Q&A documents, cheat sheets, and inter
 ✅ Jenkins (CI/CD Pipelines)
 ✅ Linux & Networking
 ✅ Terraform (Infrastructure as Code)
+✅ Docker & Containerization
+✅ Monitoring (Datadog & AWS CloudWatch)
 ✅ Troubleshooting & Debugging
 ✅ Architecture Design Questions
 ✅ Cloud Interview Preparation
@@ -95,9 +115,11 @@ This repository contains study materials, Q&A documents, cheat sheets, and inter
 
 2. **Browse by topic** – Open the relevant file based on the interview topic you're preparing for.
 
-3. **PDF files** – Download and read offline for revision.
+3. **Check the `Notes/` folder** – For deeper, topic-specific study notes (DevOps tools, AWS, Linux, Terraform).
 
-4. **Markdown files** – Best viewed directly on GitHub with proper formatting.
+4. **PDF files** – Download and read offline for revision.
+
+5. **Markdown files** – Best viewed directly on GitHub with proper formatting.
 
 ---
 
