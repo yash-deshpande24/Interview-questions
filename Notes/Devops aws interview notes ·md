@@ -1,0 +1,245 @@
+# DevOps & AWS Interview Notes
+
+---
+
+## ☁️ AWS SERVICES
+
+### 1. EC2 (Elastic Compute Cloud)
+- Virtual server (VM) in the cloud, used to run applications.
+- Pay-as-you-go pricing (On-Demand, Reserved, Spot, Savings Plan).
+- Comes with instance types (t2, t3, m5, c5, r5, etc.) based on CPU/Memory/Network need.
+- Uses **AMI (Amazon Machine Image)** to launch pre-configured instances.
+- Attached with **EBS (Elastic Block Store)** for persistent storage.
+- Security controlled via **Security Groups** (stateful, instance-level firewall).
+- Supports **Auto Scaling Groups (ASG)** to scale in/out based on load.
+- Can be placed behind a **Load Balancer (ALB/NLB/CLB)**.
+- Key Pair (SSH) used for secure login.
+- Placement groups (Cluster, Spread, Partition) control instance placement for performance/HA.
+
+### 2. VPC (Virtual Private Cloud)
+- Logically isolated network within AWS where you launch resources.
+- Contains **Subnets** — Public (has route to Internet Gateway) and Private (no direct internet access).
+- **Internet Gateway (IGW)** – allows public subnet to access internet.
+- **NAT Gateway/NAT Instance** – allows private subnet to access internet (outbound only).
+- **Route Tables** – define traffic routing rules for subnets.
+- **Security Groups** – stateful, instance-level firewall (allow rules only).
+- **NACL (Network ACL)** – stateless, subnet-level firewall (allow + deny rules).
+- **VPC Peering** – connects two VPCs privately.
+- **Transit Gateway** – connects multiple VPCs/on-prem networks centrally.
+- **VPC Endpoints** – private connection to AWS services without going through internet (Gateway & Interface endpoints).
+- CIDR block defines IP range of VPC.
+
+### 3. S3 (Simple Storage Service)
+- Object storage service (not block/file storage).
+- Data stored as objects inside **Buckets** (globally unique names).
+- Storage classes: Standard, Intelligent-Tiering, Standard-IA, One Zone-IA, Glacier, Glacier Deep Archive.
+- Features: Versioning, Lifecycle policies, Cross-Region Replication (CRR), Static website hosting.
+- Security: Bucket Policies, ACLs, IAM Policies, Block Public Access.
+- Encryption: SSE-S3, SSE-KMS, SSE-C, client-side encryption.
+- Event notifications can trigger Lambda/SQS/SNS.
+- 11 9's durability (99.999999999%).
+
+### 4. RDS (Relational Database Service)
+- Managed relational database service (MySQL, PostgreSQL, MariaDB, Oracle, SQL Server, Aurora).
+- AWS handles patching, backups, and maintenance.
+- **Multi-AZ** – synchronous replication for High Availability (failover).
+- **Read Replicas** – asynchronous replication for read scaling.
+- Automated backups & manual snapshots.
+- Encryption at rest using KMS.
+- Parameter Groups & Option Groups for DB configuration.
+- Aurora – AWS's own high-performance, MySQL/PostgreSQL-compatible engine (faster, more scalable).
+
+### 5. Fargate
+- Serverless compute engine for containers (works with ECS and EKS).
+- No need to manage/provision EC2 instances — AWS manages underlying infrastructure.
+- You just define CPU/Memory needed for the container (task definition).
+- Pay only for the resources used by the container, not idle servers.
+- Good for microservices/batch jobs without infra management overhead.
+
+### 6. Lambda
+- Serverless, event-driven compute service — run code without provisioning servers.
+- Supports languages: Python, Node.js, Java, Go, .NET, Ruby, custom runtimes.
+- Triggered by events: S3 upload, API Gateway, DynamoDB streams, CloudWatch Events, SNS/SQS.
+- Billing based on number of requests + execution duration (ms).
+- Max execution timeout: 15 minutes.
+- Supports Layers (shared code/libraries) and environment variables.
+- Cold start vs Warm start concept important for performance.
+
+### 7. ECS (Elastic Container Service)
+- AWS's own container orchestration service (alternative to Kubernetes).
+- Runs Docker containers using **Task Definitions** (blueprint of container config).
+- Two launch types: **EC2 launch type** (you manage instances) and **Fargate launch type** (serverless).
+- **ECS Cluster** – logical grouping of tasks/services.
+- **ECS Service** – ensures desired number of tasks running, integrates with Load Balancer.
+- Supports Service Auto Scaling.
+
+### 8. IAM (Identity and Access Management)
+- Manages authentication (who can log in) & authorization (what they can do).
+- Core components: **Users, Groups, Roles, Policies**.
+- Policies written in JSON, define Allow/Deny permissions.
+- **IAM Roles** – used for granting temporary permissions to AWS services (e.g., EC2 to access S3) without hardcoding keys.
+- **MFA (Multi-Factor Authentication)** for extra security.
+- Principle of Least Privilege should always be followed.
+- IAM is global (not region-specific).
+- Supports Federation (SSO with external identity providers like Okta, Azure AD).
+
+### 9. ECR (Elastic Container Registry)
+- Fully managed Docker container image registry (like Docker Hub, but AWS-native).
+- Integrated with ECS, EKS, and Fargate for pulling images.
+- Supports image scanning for vulnerabilities.
+- Access controlled via IAM policies.
+- Supports both private and public repositories.
+- Lifecycle policies to auto-clean old/unused images.
+
+### 10. CodePipeline
+- Fully managed CI/CD orchestration service.
+- Automates build, test, and deploy phases of release pipeline.
+- Stages: Source (GitHub/CodeCommit/S3) → Build (CodeBuild) → Deploy (CodeDeploy/ECS/S3).
+- Integrates with third-party tools like Jenkins, GitHub Actions, Bitbucket.
+- Supports manual approval stages before production deployment.
+
+### 11. CodeBuild
+- Fully managed build service — compiles source code, runs tests, produces artifacts.
+- Uses a **buildspec.yml** file to define build steps (install, pre_build, build, post_build).
+- No need to manage build servers — scales automatically.
+- Can push built Docker images directly to ECR.
+- Works standalone or as a stage in CodePipeline.
+
+### 12. Bitbucket (Third-party, integrated with AWS)
+- Git-based source code repository (like GitHub/GitLab) by Atlassian.
+- Supports Bitbucket Pipelines for CI/CD directly from repo.
+- Can be integrated as a Source stage in AWS CodePipeline.
+- Supports branch permissions, pull requests, code reviews.
+
+### 13. CloudTrail
+- Records **API calls / activity logs** across your AWS account (who did what, when, from where).
+- Used for auditing, security analysis, compliance, and troubleshooting.
+- Logs stored in S3, can be analyzed using Athena/CloudWatch Logs Insights.
+- Can trigger alerts via CloudWatch Events on suspicious activity (e.g., root login, security group changes).
+- Enabled by default for last 90 days (Event history); needs a Trail for long-term storage.
+
+### 14. Route 53
+- AWS's scalable **DNS (Domain Name System)** web service.
+- Domain registration + DNS routing + health checks.
+- Routing policies: Simple, Weighted, Latency-based, Failover, Geolocation, Geoproximity, Multi-value.
+- Health checks to route traffic away from unhealthy endpoints.
+- Integrates with ELB, CloudFront, S3 for alias records.
+
+### 15. Additional Important AWS Services (commonly asked)
+- **CloudFormation** – Infrastructure as Code (IaC) using JSON/YAML templates.
+- **CloudFront** – CDN (Content Delivery Network) for caching content globally, reduces latency.
+- **SNS (Simple Notification Service)** – Pub/Sub messaging for sending notifications (email, SMS, Lambda trigger).
+- **SQS (Simple Queue Service)** – Message queuing service to decouple microservices (Standard & FIFO queues).
+- **KMS (Key Management Service)** – Manage encryption keys for data security.
+- **Secrets Manager** – Securely store & rotate secrets (DB passwords, API keys).
+- **Systems Manager (SSM)** – Manage EC2 instances (Parameter Store, Session Manager, Patch Manager).
+- **Elastic Load Balancer (ELB)** – Distributes traffic (ALB - Layer7, NLB - Layer4, CLB - legacy).
+- **Auto Scaling Group (ASG)** – Automatically adjusts EC2 count based on demand.
+- **DynamoDB** – Managed NoSQL database, serverless, single-digit ms latency.
+- **EKS (Elastic Kubernetes Service)** – Managed Kubernetes control plane by AWS.
+- **CodeDeploy** – Automates code deployments to EC2, Lambda, ECS.
+- **CodeCommit** – AWS's own Git-based source repository.
+- **Organizations** – Manage multiple AWS accounts centrally, apply SCPs (Service Control Policies).
+- **Cost Explorer / Budgets** – Cost monitoring and forecasting tools.
+- **WAF (Web Application Firewall)** – Protects apps from common web exploits (SQLi, XSS).
+- **Shield** – DDoS protection service (Standard & Advanced).
+- **Config** – Tracks resource configuration changes & compliance.
+- **EFS (Elastic File System)** – Managed NFS file storage, shared across multiple EC2 instances.
+
+---
+
+## 🐳 DOCKER
+
+- Containerization platform — packages application + dependencies into a lightweight, portable **container**.
+- Uses **Dockerfile** to define image build steps (FROM, RUN, COPY, CMD, ENTRYPOINT, EXPOSE, WORKDIR).
+- **Docker Image** – read-only template used to create containers.
+- **Docker Container** – running instance of an image, isolated using Linux namespaces & cgroups.
+- **Docker Hub** – public registry to store/share images (like GitHub for images).
+- **Docker Volumes** – used for persistent data storage outside container lifecycle.
+- **Docker Network** – bridge, host, overlay, none — controls container communication.
+- **Docker Compose** – define & run multi-container applications using a single `docker-compose.yml` file.
+- **Multi-stage builds** – reduce final image size by separating build & runtime stages.
+- Key commands: `docker build`, `docker run`, `docker ps`, `docker exec`, `docker logs`, `docker stop/rm`, `docker push/pull`.
+- Difference between Container vs VM: containers share host OS kernel (lightweight), VMs have full separate OS (heavier).
+
+---
+
+## 🏗️ TERRAFORM
+
+- **Infrastructure as Code (IaC)** tool by HashiCorp, used to provision & manage cloud infrastructure declaratively.
+- Written in **HCL (HashiCorp Configuration Language)**.
+- Cloud-agnostic — supports AWS, Azure, GCP, and many other providers.
+- Core commands: `terraform init`, `plan`, `apply`, `destroy`, `validate`, `fmt`.
+- **State file (terraform.tfstate)** – tracks current infra state; should be stored remotely (S3 + DynamoDB for locking) in team environments.
+- **Providers** – plugins to interact with cloud APIs (e.g., AWS provider).
+- **Resources** – actual infra components being created (EC2, S3, VPC, etc.).
+- **Variables & Outputs** – make configs reusable and dynamic.
+- **Modules** – reusable, packaged Terraform configurations for DRY code.
+- **Workspaces** – manage multiple environments (dev/stage/prod) using same code.
+- **terraform plan** – shows execution plan before applying changes (dry run).
+- Handles dependency graph automatically between resources.
+- Drift detection – identifies manual changes made outside Terraform.
+
+---
+
+## 🔧 JENKINS
+
+- Open-source **automation server** used for CI/CD (Continuous Integration/Continuous Deployment).
+- **Jenkinsfile** – defines pipeline as code (Declarative or Scripted syntax).
+- Pipeline stages: Checkout → Build → Test → Package → Deploy.
+- **Plugins** – extend Jenkins functionality (Git, Docker, Kubernetes, Slack, SonarQube integrations).
+- **Master-Agent (Controller-Node) architecture** – master schedules jobs, agents (nodes) execute them, allows distributed builds.
+- **Freestyle jobs** vs **Pipeline jobs** – Pipeline is code-based & more flexible/version-controlled.
+- Supports **Webhooks** – auto-trigger builds on Git push.
+- **Blue Ocean** – modern visual UI for Jenkins pipelines.
+- Credentials Manager – securely store secrets/tokens/SSH keys used in pipelines.
+- Integrates with Docker (build & push images), Kubernetes (deploy), and cloud providers.
+- Supports parallel stages, post-build actions (email notification, artifact archiving).
+
+---
+
+## 📊 AWS CLOUDWATCH
+
+- AWS's native **monitoring and observability service**.
+- **Metrics** – collects performance data (CPU, Memory, Disk, Network) from AWS resources.
+- **CloudWatch Logs** – centralized log collection & storage from EC2, Lambda, ECS, etc.
+- **CloudWatch Alarms** – trigger notifications/actions (via SNS) when metric crosses threshold.
+- **CloudWatch Events / EventBridge** – rule-based automation, triggers Lambda/other services on specific events.
+- **CloudWatch Dashboards** – customizable visual dashboards for metrics.
+- **Log Insights** – query language to analyze log data.
+- Custom Metrics – push your own application-level metrics using CloudWatch agent/API.
+- Used heavily for Auto Scaling triggers (scale based on CPU utilization, etc.).
+
+---
+
+## 🐶 DATADOG
+
+- Third-party **SaaS-based monitoring & observability platform** (works across cloud, on-prem, hybrid).
+- Provides Infrastructure Monitoring, APM (Application Performance Monitoring), Log Management, and Real User Monitoring (RUM) in one platform.
+- Uses lightweight **Datadog Agent** installed on hosts/containers to collect metrics/logs/traces.
+- **Dashboards** – highly customizable, real-time visualizations.
+- **Monitors** – set alerts on metrics/logs/traces, notify via Slack, email, PagerDuty.
+- Supports **distributed tracing** – track a request across multiple microservices (helps in root cause analysis).
+- Integrates with 600+ technologies (AWS, Docker, Kubernetes, Jenkins, etc.).
+- **Tags** – key-value pairs used to filter/group/organize resources across the platform.
+- Log Management – centralize, search, and analyze logs at scale with indexing/filtering.
+- Advantage over CloudWatch: works across multi-cloud, richer UI, better correlation between metrics/logs/traces, easier to use for teams managing hybrid/multi-cloud environments.
+
+---
+
+## 💡 Quick Comparison Table
+
+| Category | AWS Native Tool | Third-Party/Alternative |
+|---|---|---|
+| Compute | EC2, Lambda, Fargate | - |
+| Container Orchestration | ECS, EKS | Kubernetes (self-managed) |
+| Container Registry | ECR | Docker Hub |
+| CI/CD | CodePipeline, CodeBuild, CodeDeploy | Jenkins, GitHub Actions |
+| IaC | CloudFormation | Terraform |
+| Monitoring | CloudWatch | Datadog, New Relic, Grafana |
+| Source Control | CodeCommit | GitHub, Bitbucket, GitLab |
+| DNS | Route 53 | Cloudflare |
+
+---
+
+*Notes prepared for interview preparation — covers AWS, Docker, Terraform, Jenkins, CloudWatch & Datadog fundamentals.*
