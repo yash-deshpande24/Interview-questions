@@ -1,0 +1,134 @@
+
+DEVOPS INTERVIEW MASTER CHEAT SHEET (1–2 YEARS EXPERIENCE)
+==========================================================
+
+======================================
+SECTION 1: ONE-PAGE DEVOPS CHEAT SHEET
+======================================
+
+DEVOPS:
+DevOps is a culture and set of practices that enables faster and reliable software delivery 
+using automation, CI/CD, monitoring, and collaboration.
+
+CI/CD:
+CI – Automatically build and test code on every commit.
+CD – Automatically deploy code to staging/production.
+
+AWS CORE:
+EC2 – Virtual servers
+S3 – Object storage
+IAM – Identity & access management
+VPC – Private network
+ALB – Load balancer
+Auto Scaling – Scale instances automatically
+EKS – Managed Kubernetes
+CloudWatch – Monitoring & logging
+
+DOCKER:
+Image – Blueprint of application
+Container – Running image
+Dockerfile – Instructions to build image
+
+KUBERNETES:
+Pod – Smallest unit
+Deployment – Manages replicas & updates
+Service – Exposes pods
+ConfigMap – Non-sensitive config
+Secret – Sensitive data
+HPA – Auto scaling pods
+
+TERRAFORM:
+IaC tool to provision infrastructure
+State stored in S3 + DynamoDB lock
+
+MONITORING:
+Metrics + Logs + Alerts
+Tools: CloudWatch, Datadog
+
+======================================
+SECTION 2: AWS DEEP-DIVE QUESTIONS
+======================================
+
+Q1. How do you design a highly available application on AWS?
+A. Use multi-AZ architecture, ALB, Auto Scaling, private subnets, IAM roles, and monitoring.
+
+Q2. Difference between ALB and NLB?
+A. ALB works at Layer 7 (HTTP/HTTPS), NLB works at Layer 4 (TCP/UDP).
+
+Q3. How does Auto Scaling work?
+A. It scales EC2 instances based on CloudWatch metrics like CPU or memory.
+
+Q4. How do you secure AWS resources?
+A. IAM roles, least privilege, security groups, private subnets, encryption.
+
+Q5. What is IAM Role vs IAM User?
+A. Users are for humans, roles are for services.
+
+Q6. What is ECR?
+A. AWS container image registry.
+
+======================================
+SECTION 3: KUBERNETES DEEP-DIVE QUESTIONS
+======================================
+
+Q7. What happens when a Pod crashes?
+A. Kubernetes recreates it automatically using Deployment.
+
+Q8. What is HPA?
+A. Horizontal Pod Autoscaler scales pods based on CPU/memory.
+
+Q9. Difference between ConfigMap and Secret?
+A. ConfigMap is plain text, Secret is base64 encoded.
+
+Q10. How does rolling update work?
+A. Pods are updated gradually without downtime.
+
+Q11. What is Node vs Pod?
+A. Node is a machine, Pod runs on a node.
+
+Q12. How do you expose an app externally?
+A. Using Service type LoadBalancer or Ingress.
+
+======================================
+SECTION 4: ADVANCED SCENARIO-BASED QUESTIONS
+======================================
+
+Q13. Production site is down. What will you do?
+A. Check monitoring alerts, logs, load balancer health, rollback if needed.
+
+Q14. Jenkins pipeline failed. How do you debug?
+A. Check console logs, credentials, plugin issues, and last successful build.
+
+Q15. Deployment succeeded but app not accessible.
+A. Check security groups, service, ingress, target group health.
+
+Q16. High CPU usage on EC2. What steps?
+A. Identify process, scale instance, optimize application.
+
+Q17. How do you handle secrets in CI/CD?
+A. Use Jenkins credentials, Kubernetes secrets, AWS Secrets Manager.
+
+Q18. How do you reduce deployment risk?
+A. Use rolling updates, blue-green deployment, canary releases.
+
+Q19. How do you rollback deployment?
+A. Use previous Docker image or kubectl rollout undo.
+
+Q20. Database is slow. What do you check?
+A. CPU, memory, connections, query performance.
+
+======================================
+SECTION 5: TRICKY INTERVIEW QUESTIONS
+======================================
+
+Q21. Is DevOps a tool?
+A. No, DevOps is a culture and practice.
+
+Q22. Can DevOps exist without cloud?
+A. Yes, but cloud makes it easier.
+
+Q23. Difference between scaling up and scaling out?
+A. Scaling up = bigger machine, scaling out = more machines.
+
+======================================
+END OF FILE

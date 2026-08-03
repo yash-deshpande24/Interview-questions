@@ -1,0 +1,125 @@
+🧱 1️⃣ Docker (Containerization Basics & Advanced)
+
+What is Docker & architecture
+
+Docker images, containers, registries
+
+Dockerfile, build, run, exec
+
+Docker networking & volumes
+
+Docker Compose & multi-container apps
+
+Real interview: microservice deployment with Docker
+
+☸️ 2️⃣ Kubernetes (Core + Advanced Concepts)
+
+(EKS was AWS-specific; now go deeper into Kubernetes itself)
+
+Architecture (Master, Nodes, Pods, Services, etc.)
+
+Deployments, ReplicaSets, DaemonSets
+
+ConfigMaps, Secrets, Volumes
+
+Ingress Controllers
+
+Helm Charts
+
+Monitoring & troubleshooting (kubectl describe/logs, events)
+
+Real-world scenario Q&A
+
+🧰 3️⃣ Jenkins (CI/CD Automation)
+
+Jenkins architecture
+
+Pipelines (Declarative & Scripted)
+
+Integrating GitHub, Docker, EKS, AWS
+
+Jenkinsfile structure
+
+Agents & distributed builds
+
+Webhooks and CI triggers
+
+Scenario-based: “Deploy app to EKS via Jenkins pipeline”
+
+🌍 4️⃣ Terraform (Infrastructure as Code, Multi-Cloud)
+
+Terraform vs CloudFormation
+
+HCL syntax, Providers, Modules
+
+Variables, Outputs, States
+
+Remote backend (S3 + DynamoDB)
+
+Workspaces & Environment management
+
+Real interview: “Create EC2, S3, VPC via Terraform”
+
+🛠️ 5️⃣ Ansible (Configuration Management)
+
+Playbooks, Roles, Inventory
+
+Variables & Templates
+
+AWS EC2 provisioning via Ansible
+
+Compare with Terraform (idempotent vs declarative)
+
+Scenario: “Install Docker + App via Ansible”
+
+🔐 6️⃣ Git / GitHub / GitLab
+
+Git basics (init, commit, branch, merge, rebase)
+
+Git advanced (stash, revert, reset, cherry-pick)
+
+GitHub Actions (CI/CD alternative)
+
+Pull Requests, branching strategies (GitFlow)
+
+Scenario: “Fix merge conflict in PR”
+
+🌐 7️⃣ Monitoring & Logging Stack
+
+Prometheus + Grafana for Kubernetes monitoring
+
+ELK / EFK Stack (Elasticsearch, Fluentd, Kibana)
+
+AWS CloudWatch + X-Ray integration
+
+Real scenario: “Monitor EKS pods with custom metrics”
+
+🔄 8️⃣ CI/CD Integration Projects
+
+Combine all above tools into real pipelines:
+
+Git → Jenkins → Docker → EKS
+
+Terraform → AWS Infrastructure → EKS
+
+Ansible → Configuration → CloudWatch Alerts
+
+🎯 This is where you build real “DevOps Engineer” project workflows.
+
+🧠 9️⃣ DevSecOps (Security in Pipelines)
+
+Image scanning (Trivy, Clair)
+
+Secrets management (AWS Secrets Manager, Vault, KMS)
+
+Compliance checks (Checkov, OPA)
+
+Interview question: “How do you secure CI/CD pipelines?”
+
+💬 🔟 Final Stage — Interview Prep & Projects
+
+Scenario-based questions from Docker, Jenkins, Terraform, Kubernetes, AWS
+
+Resume-ready projects (e.g., “CI/CD pipeline deploying microservices to EKS using Jenkins & Terraform”)
+
+Mock questions for each stage: DevOps + Cloud + CI/CD

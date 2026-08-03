@@ -1,0 +1,143 @@
+
+DEVOPS INTERVIEW QUESTIONS & ANSWERS (1.5 YEARS EXPERIENCE)
+========================================================
+
+SECTION 1: HR & INTRODUCTION
+----------------------------
+
+Q1. Tell me about yourself.
+A. I’m a Cloud & DevOps Engineer with around 1.5 years of hands-on experience working on AWS and DevOps tools. 
+I have worked with AWS services like EC2, VPC, IAM, ALB, Auto Scaling, and EKS. 
+I have implemented CI/CD pipelines using Jenkins and GitHub, containerized applications using Docker, 
+and deployed them on Kubernetes. I also have experience with Terraform, Linux administration, 
+monitoring, and troubleshooting.
+
+Q2. Why did you switch from Backend to DevOps?
+A. While working on backend development, I became more interested in how applications are deployed, scaled, 
+and monitored in real environments. I enjoyed automation, CI/CD, and cloud infrastructure work more, 
+so I upskilled in AWS and DevOps tools and transitioned into DevOps.
+
+Q3. What is DevOps?
+A. DevOps is a set of practices that combines development and operations to deliver applications faster, 
+with better quality and reliability using automation and continuous feedback.
+
+SECTION 2: AWS
+--------------
+
+Q4. What is EC2?
+A. EC2 is a virtual server in AWS used to run applications where we manage OS, security, and scaling.
+
+Q5. What is EKS?
+A. EKS is a managed Kubernetes service by AWS that helps deploy, manage, and scale containerized applications.
+
+Q6. Difference between EC2 and EKS?
+A. EC2 runs applications directly on virtual machines, while EKS runs containerized applications using Kubernetes.
+
+Q7. How do you secure an EC2 instance?
+A. By using IAM roles, security groups, key-based SSH, private subnets, OS patching, and disabling unused ports.
+
+Q8. What is IAM?
+A. IAM is used to manage users, roles, and permissions in AWS securely.
+
+Q9. What is Auto Scaling?
+A. Auto Scaling automatically increases or decreases EC2 instances based on traffic or load.
+
+Q10. What is VPC?
+A. VPC is a virtual network in AWS that allows us to isolate and control networking resources.
+
+SECTION 3: CI/CD & JENKINS
+--------------------------
+
+Q11. What is CI?
+A. CI means automatically building and testing code whenever changes are pushed to the repository.
+
+Q12. What is CD?
+A. CD means automatically deploying the application to staging or production environments.
+
+Q13. Explain your Jenkins pipeline.
+A. My Jenkins pipeline includes code checkout, build, test, Docker image creation, pushing to registry, 
+and deployment to servers or Kubernetes.
+
+Q14. What is Jenkinsfile?
+A. Jenkinsfile is a file that defines CI/CD pipeline as code.
+
+SECTION 4: DOCKER
+------------------
+
+Q15. What is Docker?
+A. Docker is a containerization platform that packages applications and dependencies together.
+
+Q16. Difference between Docker image and container?
+A. An image is a template, and a container is a running instance of an image.
+
+Q17. What is Dockerfile?
+A. Dockerfile contains instructions to build a Docker image.
+
+SECTION 5: KUBERNETES
+---------------------
+
+Q18. What is Kubernetes?
+A. Kubernetes is a container orchestration tool used to manage containerized applications.
+
+Q19. What is a Pod?
+A. A Pod is the smallest deployable unit in Kubernetes.
+
+Q20. What is a Deployment?
+A. Deployment manages replicas, updates, and rollbacks of Pods.
+
+Q21. What is a Service?
+A. Service exposes Pods to internal or external traffic.
+
+Q22. What is rolling update?
+A. Rolling update updates Pods gradually without downtime.
+
+SECTION 6: TERRAFORM
+--------------------
+
+Q23. What is Terraform?
+A. Terraform is an Infrastructure as Code tool used to provision cloud resources.
+
+Q24. What is Terraform state?
+A. Terraform state keeps track of created resources.
+
+Q25. How do you manage Terraform state?
+A. By storing state in S3 and locking it using DynamoDB.
+
+SECTION 7: LINUX
+----------------
+
+Q26. What is Linux?
+A. Linux is an open-source operating system widely used in servers.
+
+Q27. How do you check running processes?
+A. Using ps, top, or htop commands.
+
+Q28. How do you check disk usage?
+A. Using df -h and du commands.
+
+SECTION 8: MONITORING & TROUBLESHOOTING
+--------------------------------------
+
+Q29. What is monitoring?
+A. Monitoring tracks system health, performance, and availability.
+
+Q30. What tools have you used for monitoring?
+A. Amazon CloudWatch and Datadog.
+
+Q31. What is an alert?
+A. An alert notifies teams when a metric crosses a threshold.
+
+SECTION 9: SCENARIO-BASED QUESTIONS
+-----------------------------------
+
+Q32. What will you do if production goes down?
+A. Check monitoring alerts, logs, identify root cause, rollback if needed, and fix the issue.
+
+Q33. How do you handle deployment failure?
+A. Rollback to previous stable version and analyze logs.
+
+Q34. How do you reduce downtime?
+A. Using rolling updates, load balancers, and auto scaling.
+
+========================================================
+END OF FILE

@@ -1,0 +1,29 @@
+
+INTERVIEW DAY ANSWERS FRAMEWORK (DEVOPS)
+=======================================
+
+STEP 1: UNDERSTAND THE QUESTION
+- Clarify environment (AWS, Kubernetes, Jenkins)
+
+STEP 2: EXPLAIN YOUR APPROACH
+- Monitoring
+- Logs
+- Root cause
+
+STEP 3: ACTION TAKEN
+- Fix / Rollback / Scale
+
+STEP 4: PREVENTION
+- Alerts, automation, best practices
+
+COMMON PHRASES TO USE:
+- "First I checked monitoring and logs"
+- "Then I isolated the issue"
+- "I fixed it and added prevention"
+
+HR CONFIDENCE TIP:
+- Speak slow
+- Use real examples
+- Don’t panic if you don’t know
+
+END OF FILE

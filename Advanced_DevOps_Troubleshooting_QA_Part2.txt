@@ -1,0 +1,98 @@
+
+ADVANCED DEVOPS TROUBLESHOOTING QUESTIONS & ANSWERS (PART 2)
+============================================================
+(Deep Interview + Real Production Scenarios)
+
+====================================
+SECTION 1: LINUX TROUBLESHOOTING
+====================================
+
+Q1. Server is very slow. What will you check?
+A. Check CPU, memory, disk usage using top, free, df. Check running processes.
+
+Q2. Disk is full on server.
+A. Find large files using du, clear logs, rotate logs, increase disk size.
+
+Q3. Service is not starting.
+A. Check service status, logs, configuration files, and port conflicts.
+
+Q4. Port already in use error.
+A. Identify process using netstat or lsof and stop or change port.
+
+====================================
+SECTION 2: DOCKER ADVANCED ISSUES
+====================================
+
+Q5. Docker container restarts continuously.
+A. Check logs, entrypoint command, application crash, memory limits.
+
+Q6. Docker image pull is slow.
+A. Check network, registry availability, image size.
+
+Q7. Environment variables not available in container.
+A. Check Dockerfile, docker-compose, Kubernetes manifests.
+
+====================================
+SECTION 3: KUBERNETES ADVANCED ISSUES
+====================================
+
+Q8. Pod stuck in ImagePullBackOff.
+A. Check image name, tag, registry access, imagePullSecrets.
+
+Q9. Kubernetes node NotReady.
+A. Check node resources, kubelet status, disk pressure.
+
+Q10. ConfigMap update not reflected in pod.
+A. Restart pods or rollout deployment.
+
+Q11. Ingress not routing traffic.
+A. Check ingress controller, rules, DNS, service backend.
+
+====================================
+SECTION 4: AWS ADVANCED ISSUES
+====================================
+
+Q12. EC2 instance suddenly terminated.
+A. Check Auto Scaling events, Spot instance interruption, logs.
+
+Q13. S3 access denied error.
+A. Check IAM permissions and bucket policy.
+
+Q14. RDS connection timeout.
+A. Check security group, subnet, DB status, connections.
+
+====================================
+SECTION 5: CI/CD ADVANCED ISSUES
+====================================
+
+Q15. Jenkins job stuck in queue.
+A. Check available executors and node availability.
+
+Q16. Jenkins credentials not working.
+A. Verify credential ID, permissions, scope.
+
+====================================
+SECTION 6: NETWORKING & SECURITY
+====================================
+
+Q17. Application accessible internally but not externally.
+A. Check security groups, load balancer, firewall.
+
+Q18. SSL certificate error.
+A. Check certificate validity, domain mapping, ALB listener.
+
+====================================
+SECTION 7: REAL PRODUCTION INCIDENTS
+====================================
+
+Q19. Sudden spike in traffic.
+A. Enable Auto Scaling, check performance, apply rate limiting.
+
+Q20. Memory leak in application.
+A. Restart service, analyze logs, fix application code.
+
+Q21. Deployment works in staging but fails in prod.
+A. Check environment variables, secrets, resource limits.
+
+====================================
+END OF FILE
