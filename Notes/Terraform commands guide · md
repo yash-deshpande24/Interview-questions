@@ -1,0 +1,95 @@
+# Terraform Commands — Types & Uses
+
+Terraform commands can be grouped into **7 main categories** based on what they manage: Setup, Planning & Applying, State Management, Workspace, Inspection, Formatting/Validation, and Module commands.
+
+---
+
+## 1. Setup Commands
+Used to prepare a Terraform project before you can run anything else.
+
+| Command | Use |
+|---|---|
+| `terraform init` | Initializes the working directory, downloads providers and modules |
+| `terraform get` | Downloads/updates modules used in the configuration |
+| `terraform version` | Shows installed Terraform version |
+| `terraform providers` | Lists all providers used in the configuration |
+
+---
+
+## 2. Planning & Applying Commands
+Used to preview and actually create/update/destroy infrastructure — the core Terraform workflow.
+
+| Command | Use |
+|---|---|
+| `terraform plan` | Shows what changes will be made, without applying them |
+| `terraform apply` | Creates or updates infrastructure to match the code |
+| `terraform apply -auto-approve` | Applies changes without asking for manual confirmation |
+| `terraform destroy` | Deletes all infrastructure managed by the configuration |
+| `terraform destroy -target=<resource>` | Deletes a specific resource only |
+| `terraform refresh` | Updates the state file to match real infrastructure |
+
+---
+
+## 3. State Management Commands
+Used to view and manage Terraform's state file (which tracks what infrastructure exists).
+
+| Command | Use |
+|---|---|
+| `terraform state list` | Lists all resources tracked in the state |
+| `terraform state show <resource>` | Shows details of a specific resource in state |
+| `terraform state rm <resource>` | Removes a resource from state (without deleting real infra) |
+| `terraform state mv <source> <dest>` | Renames/moves a resource in state |
+| `terraform import <resource> <id>` | Brings existing infrastructure under Terraform management |
+
+---
+
+## 4. Workspace Commands
+Used to manage multiple environments (like dev, staging, production) using the same code.
+
+| Command | Use |
+|---|---|
+| `terraform workspace list` | Lists all workspaces |
+| `terraform workspace new <name>` | Creates a new workspace |
+| `terraform workspace select <name>` | Switches to a different workspace |
+| `terraform workspace delete <name>` | Deletes a workspace |
+
+---
+
+## 5. Inspection Commands
+Used to check outputs, values, and the dependency structure of your infrastructure.
+
+| Command | Use |
+|---|---|
+| `terraform output` | Shows output values defined in the configuration |
+| `terraform show` | Shows the current state or a saved plan in readable format |
+| `terraform graph` | Generates a visual dependency graph of resources |
+| `terraform console` | Opens an interactive console to test expressions |
+
+---
+
+## 6. Formatting & Validation Commands
+Used to keep code clean and catch errors before applying.
+
+| Command | Use |
+|---|---|
+| `terraform fmt` | Automatically formats code to a standard style |
+| `terraform validate` | Checks configuration files for syntax errors |
+| `terraform fmt -recursive` | Formats all files in subdirectories too |
+
+---
+
+## 7. Module Commands
+Used to package and reuse Terraform code (you used this in your Auto-Healing ECS project).
+
+| Command | Use |
+|---|---|
+| `terraform get` | Downloads modules referenced in configuration |
+| `terraform init -upgrade` | Re-downloads and upgrades modules/providers to latest allowed versions |
+
+---
+
+## Simple Interview Answer
+
+**Q: How many types of Terraform commands are there, and what are they used for?**
+
+**A:** "Terraform commands can be grouped into 7 main types. Setup commands, like `terraform init`, prepare the project and download providers. Planning and applying commands — `plan`, `apply`, and `destroy` — are the core workflow to preview, create, or remove infrastructure. State commands help manage and inspect the state file, which tracks what's been created. Workspace commands let you manage multiple environments like dev, staging, and production using the same code. Inspection commands, like `output` and `show`, let you check values and results. Formatting and validation commands, like `fmt` and `validate`, keep the code clean and catch errors early. And module commands help reuse code — I used reusable Terraform modules in my Auto-Healing ECS project to cut environment setup time by 80%."
